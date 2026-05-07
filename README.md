@@ -1,2 +1,0 @@
-# Gantelya
-Gym 
