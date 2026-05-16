@@ -1,381 +1,453 @@
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>GYM G — Спортклуб</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-<style>
-:root{--red:#E63946;--red-dark:#c62b38;--dark:#0d0d0d;--dark2:#151515;--dark3:#1c1c1c;--dark4:#252525;--dark5:#2f2f2f;--gray:#888;--light:#f0f0f0;--white:#fff;--font-head:'Oswald',sans-serif;--font-body:'Nunito Sans',sans-serif;--R:14px}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--font-body);background:var(--dark);color:var(--light);-webkit-font-smoothing:antialiased;overflow-x:hidden}
-.app{max-width:480px;margin:0 auto;min-height:100vh;background:var(--dark);position:relative}
-.header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px;background:linear-gradient(180deg,var(--dark2),transparent);position:sticky;top:0;z-index:50;backdrop-filter:blur(12px)}
-.header-left{display:flex;align-items:center;gap:12px}
-.header h1{font-family:var(--font-head);font-size:22px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--white)}
-.header h1 span{color:var(--red)}
-.logo-img{width:38px;height:38px;border-radius:10px;object-fit:cover}
-.admin-toggle{display:flex;align-items:center;gap:6px;background:var(--dark4);border:1px solid var(--dark5);border-radius:20px;padding:6px 12px;color:var(--gray);font-size:11px;cursor:pointer;transition:all .2s;font-family:var(--font-body)}
-.admin-toggle.active{background:rgba(230,57,70,.15);border-color:var(--red);color:var(--red)}
-.admin-toggle svg{width:14px;height:14px}
-.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;display:flex;background:var(--dark2);border-top:1px solid var(--dark4);z-index:100;padding-bottom:env(safe-area-inset-bottom,0)}
-.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 12px;background:none;border:none;color:var(--gray);font-size:10px;font-family:var(--font-body);font-weight:600;cursor:pointer;transition:color .2s;position:relative}
-.nav-btn svg{width:22px;height:22px}
-.nav-btn.active{color:var(--red)}
-.nav-btn.active::before{content:'';position:absolute;top:0;left:25%;right:25%;height:2px;background:var(--red);border-radius:0 0 4px 4px}
-.content{padding:8px 16px 90px}
-.section-header{font-family:var(--font-head);font-size:20px;font-weight:700;color:var(--white);margin-bottom:16px;text-transform:uppercase;letter-spacing:2px}
-.card{background:var(--dark3);border-radius:var(--R);padding:18px;margin-bottom:14px;border:1px solid var(--dark4)}
-.card-title{font-family:var(--font-head);font-size:15px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--red);margin-bottom:14px;display:flex;align-items:center;gap:8px}
-.card-title svg{width:18px;height:18px}
-.schedule-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--dark4);font-size:14px}
-.schedule-row:last-child{border-bottom:none}
-.schedule-day{color:var(--gray);font-weight:600}
-.schedule-hours{color:var(--white);font-weight:700}
-.sched-edit-row{display:flex;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--dark4)}
-.sched-edit-row:last-child{border-bottom:none}
-.sched-edit-row input{flex:1}
-.sched-del{background:none;border:none;color:var(--gray);cursor:pointer;font-size:18px;padding:0 4px;transition:color .2s}
-.sched-del:hover{color:var(--red)}
-.location-block{display:flex;align-items:center;gap:10px;color:var(--light);font-size:14px}
-.location-block svg{width:20px;height:20px;color:var(--red);flex-shrink:0}
-.photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.photo-card{border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;aspect-ratio:1;position:relative;overflow:hidden;background-size:cover;background-position:center}
-.photo-overlay{position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.75) 0%,transparent 55%);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:14px}
-.photo-card .p-emoji{font-size:40px;margin-bottom:6px}
-.photo-card .p-label{font-family:var(--font-head);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--white);text-align:center}
-.photo-add{border:2px dashed var(--dark5);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;background:var(--dark3);aspect-ratio:1;border-radius:12px}
-.photo-add:hover{border-color:var(--red)}
-.photo-add svg{width:28px;height:28px;color:var(--gray);margin-bottom:4px}
-.photo-add span{font-size:11px;color:var(--gray)}
-.photo-rm{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:rgba(230,57,70,.9);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5;font-size:14px;line-height:1}
-.trainer-item{display:flex;align-items:center;gap:14px;padding:14px;background:var(--dark3);border-radius:var(--R);margin-bottom:10px;border:1px solid var(--dark4);cursor:pointer;transition:all .2s}
-.trainer-item:hover{border-color:var(--red);background:var(--dark4)}
-.trainer-avatar{width:52px;height:52px;border-radius:50%;background:var(--dark5);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;border:2px solid var(--dark5);overflow:hidden}
-.trainer-avatar img{width:100%;height:100%;object-fit:cover}
-.trainer-item:hover .trainer-avatar{border-color:var(--red)}
-.trainer-info{flex:1;min-width:0}
-.trainer-name{font-family:var(--font-head);font-size:16px;font-weight:600;color:var(--white);margin-bottom:2px}
-.trainer-spec{font-size:12px;color:var(--gray)}
-.trainer-rating{display:flex;align-items:center;gap:4px;font-size:13px;font-weight:700;color:#fbbf24}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;display:flex;align-items:flex-end;justify-content:center;animation:fadeIn .2s}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.modal{background:var(--dark2);border-radius:20px 20px 0 0;width:100%;max-width:480px;max-height:85vh;overflow-y:auto;padding:24px 20px 32px;animation:slideUp .3s ease-out}
-@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
-.modal-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px}
-.modal-close{background:var(--dark4);border:none;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--gray);transition:all .2s;flex-shrink:0}
-.modal-close:hover{background:var(--red);color:var(--white)}
-.modal-close svg{width:18px;height:18px}
-.modal-avatar{width:72px;height:72px;border-radius:50%;background:var(--dark4);display:flex;align-items:center;justify-content:center;font-size:38px;border:3px solid var(--red);margin-bottom:12px;overflow:hidden}
-.modal-avatar img{width:100%;height:100%;object-fit:cover}
-.modal-name{font-family:var(--font-head);font-size:24px;font-weight:700;color:var(--white);margin-bottom:4px}
-.modal-section{margin-top:18px;padding-top:18px;border-top:1px solid var(--dark4)}
-.modal-label{font-family:var(--font-head);font-size:12px;text-transform:uppercase;letter-spacing:1.5px;color:var(--red);margin-bottom:8px}
-.modal-text{font-size:14px;color:var(--light);line-height:1.6}
-.modal-price{font-family:var(--font-head);font-size:28px;font-weight:700;color:var(--white)}
-.book-btn{width:100%;padding:16px;background:var(--red);color:var(--white);border:none;border-radius:12px;font-family:var(--font-head);font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:2px;cursor:pointer;margin-top:20px;transition:background .2s}
-.book-btn:hover{background:var(--red-dark)}
-.event-filter-bar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
-.ef{padding:6px 14px;border-radius:20px;border:1px solid var(--dark5);background:var(--dark3);color:var(--gray);font-size:12px;font-family:var(--font-body);font-weight:600;cursor:pointer;transition:all .2s}
-.ef.active{background:var(--red);border-color:var(--red);color:var(--white)}
-.event-card{display:flex;gap:14px;padding:16px;background:var(--dark3);border-radius:var(--R);margin-bottom:10px;border:1px solid var(--dark4);transition:border-color .2s}
-.event-card.adm{cursor:pointer}
-.event-card.adm:hover{border-color:var(--red)}
-.event-emoji{width:44px;height:44px;border-radius:12px;background:var(--dark5);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
-.event-content{flex:1;min-width:0}
-.event-title{font-family:var(--font-head);font-size:15px;font-weight:600;color:var(--white);margin-bottom:4px}
-.event-desc{font-size:13px;color:var(--gray);line-height:1.5;margin-bottom:6px}
-.event-date{font-size:11px;color:var(--red);font-weight:700}
-.badge{font-size:9px;padding:2px 8px;border-radius:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;display:inline-block;margin-bottom:6px}
-.b-event{background:rgba(59,130,246,.2);color:#60a5fa}
-.b-discount{background:rgba(230,57,70,.2);color:var(--red)}
-.b-news{background:rgba(34,197,94,.2);color:#4ade80}
-.b-change{background:rgba(250,204,21,.2);color:#facc15}
-.feed-card{padding:16px;background:var(--dark3);border-radius:var(--R);margin-bottom:10px;border:1px solid var(--dark4);border-left:3px solid var(--red);transition:border-color .2s}
-.feed-card.adm{cursor:pointer}
-.feed-card.adm:hover{border-color:var(--red)}
-.feed-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.feed-emoji{font-size:20px}
-.feed-title{font-family:var(--font-head);font-size:15px;font-weight:600;color:var(--white)}
-.feed-text{font-size:13px;color:var(--light);line-height:1.6;margin-bottom:8px}
-.feed-date{font-size:11px;color:var(--gray)}
-.fg{margin-bottom:14px}
-.fl{font-family:var(--font-head);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--gray);margin-bottom:6px;display:block}
-.fi,.fsel,.fta{width:100%;padding:10px 14px;background:var(--dark4);border:1px solid var(--dark5);border-radius:10px;color:var(--white);font-size:14px;font-family:var(--font-body);transition:border-color .2s}
-.fi:focus,.fsel:focus,.fta:focus{outline:none;border-color:var(--red)}
-.fi::placeholder,.fta::placeholder{color:#555}
-.fta{resize:vertical;min-height:60px}
-.fsel{appearance:none;cursor:pointer}
-.fsel option{background:var(--dark3);color:var(--white)}
-.fa{display:flex;gap:8px;margin-top:16px}
-.btn{padding:10px 20px;border-radius:10px;border:none;font-family:var(--font-head);font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:1px;cursor:pointer;transition:all .2s}
-.bp{background:var(--red);color:var(--white)}
-.bp:hover{background:var(--red-dark)}
-.bs{background:var(--dark5);color:var(--light)}
-.bd{background:#7f1d1d;color:#fca5a5}
-.bd:hover{background:#991b1b}
-.add-btn{width:100%;padding:14px;background:var(--dark3);border:2px dashed var(--dark5);border-radius:var(--R);color:var(--gray);font-family:var(--font-head);font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;margin-top:10px}
-.add-btn:hover{border-color:var(--red);color:var(--red)}
-.add-btn svg{width:18px;height:18px}
-.upload-zone{width:100%;padding:20px;border:2px dashed var(--dark5);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;background:var(--dark4);gap:6px}
-.upload-zone:hover{border-color:var(--red)}
-.upload-zone svg{width:28px;height:28px;color:var(--gray)}
-.upload-zone span{font-size:12px;color:var(--gray)}
-.up-preview{width:100%;max-height:120px;object-fit:contain;border-radius:10px;margin-top:8px}
-.up-avatar{width:80px;height:80px;border-radius:50%;object-fit:cover;margin-top:8px;border:3px solid var(--red)}
-.logo-zone{width:80px;height:80px;border-radius:12px;border:2px dashed var(--dark5);display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;transition:all .2s;background:var(--dark4);flex-shrink:0}
-.logo-zone:hover{border-color:var(--red)}
-.logo-zone img{width:100%;height:100%;object-fit:cover}
-.logo-zone svg{width:24px;height:24px;color:var(--gray)}
-.emoji-picker{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
-.eo{width:40px;height:40px;border-radius:10px;background:var(--dark4);border:2px solid transparent;font-size:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s}
-.eo:hover{background:var(--dark5)}
-.eo.sel{border-color:var(--red);background:rgba(230,57,70,.15)}
-.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--red);color:var(--white);padding:14px 28px;border-radius:12px;font-family:var(--font-head);font-weight:600;font-size:14px;z-index:999;animation:toastIn .3s ease-out;box-shadow:0 8px 32px rgba(230,57,70,.4);text-transform:uppercase;letter-spacing:1px;white-space:nowrap}
-@keyframes toastIn{from{opacity:0;transform:translate(-50%,20px)}to{opacity:1;transform:translate(-50%,0)}}
-.hidden{display:none!important}
-.ie{background:none;border:none;cursor:pointer;color:var(--gray);padding:4px;transition:color .2s;display:inline-flex;align-items:center}
-.ie:hover{color:var(--red)}
-.ie svg{width:16px;height:16px}
-</style>
-</head>
-<body>
-<div class="app" id="app">
-  <div class="header">
-    <div class="header-left"><div id="hLogo"></div><h1>GYM <span>G</span></h1></div>
-    <button class="admin-toggle" id="aBtn" onclick="tgAdmin()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
-      <span id="aLbl">DEV</span>
-    </button>
-  </div>
-  <div class="content" id="ct"></div>
-  <nav class="bottom-nav">
-    <button class="nav-btn active" id="nav-home" onclick="go('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1"/></svg><span>Главная</span></button>
-    <button class="nav-btn" id="nav-trainers" onclick="go('trainers')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg><span>Тренеры</span></button>
-    <button class="nav-btn" id="nav-events" onclick="go('events')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Ивенты</span></button>
-    <button class="nav-btn" id="nav-feed" onclick="go('feed')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span>Лента</span></button>
-  </nav>
-</div>
-<div class="toast hidden" id="toast"></div>
-<div class="modal-overlay hidden" id="mo" onclick="cm()"><div class="modal" id="mb" onclick="event.stopPropagation()"></div></div>
-<input type="file" id="fi" accept="image/*" class="hidden">
-<script>
-// ═══ STATE ═══
-const D={
-  logo:null,
-  schedule:[{day:"Пн–Пт",hours:"06:00 — 23:00"},{day:"Сб",hours:"08:00 — 21:00"},{day:"Вс",hours:"09:00 — 20:00"}],
-  photos:[
-    {id:1,label:"Тренажёрный зал",emoji:"🏋️",img:null,gr:"linear-gradient(135deg,#1a1a2e,#16213e)"},
-    {id:2,label:"Зал бокса",emoji:"🥊",img:null,gr:"linear-gradient(135deg,#2d1b2e,#1a1a2e)"},
-    {id:3,label:"Зал йоги",emoji:"🧘",img:null,gr:"linear-gradient(135deg,#1b2e1d,#1a1a2e)"},
-    {id:4,label:"Кроссфит зона",emoji:"💥",img:null,gr:"linear-gradient(135deg,#2e1b1b,#1a1a2e)"}
-  ],
-  trainers:[
-    {id:1,name:"Александр Ковальчук",ava:"🏋️",photo:null,exp:"8 лет",spec:"Силовые тренировки",prog:"Набор мышечной массы, Жиросжигание, Пауэрлифтинг",price:"500 грн/час",rat:4.9},
-    {id:2,name:"Марина Степаненко",ava:"🤸",photo:null,exp:"5 лет",spec:"Йога и стретчинг",prog:"Хатха-йога, Виньяса, Растяжка для начинающих",price:"450 грн/час",rat:4.8},
-    {id:3,name:"Дмитрий Бондаренко",ava:"🥊",photo:null,exp:"10 лет",spec:"Бокс и кикбоксинг",prog:"Бокс для новичков, Кикбоксинг, Кардио-бокс",price:"550 грн/час",rat:5.0},
-    {id:4,name:"Олена Ткаченко",ava:"💪",photo:null,exp:"6 лет",spec:"Кроссфит",prog:"WOD программы, Функциональный тренинг, HIIT",price:"500 грн/час",rat:4.7}
-  ],
-  events:[
-    {id:1,type:"event",title:"Открытая тренировка",desc:"Бесплатная групповая тренировка для всех",date:"15 мая 2026",emoji:"🎯"},
-    {id:2,type:"discount",title:"-30% на абонемент",desc:"Скидка на трёхмесячный абонемент до конца мая",date:"до 31 мая",emoji:"🔥"},
-    {id:3,type:"news",title:"Новый зал для бокса",desc:"Мы открыли новый зал для единоборств с профессиональным рингом",date:"10 мая 2026",emoji:"🥊"},
-    {id:4,type:"change",title:"Изменение графика",desc:"В праздничные дни зал работает с 9:00 до 18:00",date:"28 мая",emoji:"📢"}
-  ],
-  feed:[
-    {id:1,title:"Рекорд клуба!",text:"Наш атлет Михаил побил рекорд — жим лёжа 180 кг! 💪",date:"7 мая 2026",emoji:"🏆"},
-    {id:2,title:"Лучший клуб города",text:"GYM G получил награду 'Лучший спортклуб 2026' по версии FitAwards",date:"5 мая 2026",emoji:"🥇"},
-    {id:3,title:"Благотворительный марафон",text:"Успешно провели марафон — собрали 50 000 грн для детского спорта",date:"1 мая 2026",emoji:"🏃"},
-    {id:4,title:"1000 участников!",text:"Наше комьюнити выросло до 1000 активных членов клуба",date:"28 апреля 2026",emoji:"🎉"}
-  ]
+import { useState, useEffect, useCallback, useRef } from "react";
+
+const RESPONSES = [
+  // Позитивные ответы
+  { text: "Безусловно да!", type: "positive" },
+  { text: "Звёзды говорят — ДА", type: "positive" },
+  { text: "Без сомнений", type: "positive" },
+  { text: "Определённо да", type: "positive" },
+  { text: "Можешь быть уверен", type: "positive" },
+  { text: "Да, именно так", type: "positive" },
+  { text: "Всё сложится наилучшим образом", type: "positive" },
+  { text: "Удача на твоей стороне", type: "positive" },
+  { text: "Вселенная одобряет", type: "positive" },
+  { text: "Это твой шанс — действуй!", type: "positive" },
+  { text: "Впереди тебя ждёт приятный сюрприз", type: "positive" },
+  { text: "Верь в себя — всё получится", type: "positive" },
+  // Нейтральные / советы
+  { text: "Спроси позже", type: "neutral" },
+  { text: "Сейчас нельзя предсказать", type: "neutral" },
+  { text: "Сконцентрируйся и спроси снова", type: "neutral" },
+  { text: "Лучше не рассказывать", type: "neutral" },
+  { text: "Ответ придёт во сне", type: "neutral" },
+  { text: "Подожди — время покажет", type: "neutral" },
+  { text: "Слушай своё сердце", type: "neutral" },
+  { text: "Тебе решать", type: "neutral" },
+  { text: "Загляни внутрь себя", type: "neutral" },
+  { text: "Доверься интуиции", type: "neutral" },
+  // Негативные / предостережения
+  { text: "Мой ответ — нет", type: "negative" },
+  { text: "Даже не думай", type: "negative" },
+  { text: "Весьма сомнительно", type: "negative" },
+  { text: "Не рассчитывай на это", type: "negative" },
+  { text: "Перспективы не очень", type: "negative" },
+  { text: "Звёзды против", type: "negative" },
+  { text: "Сейчас — не лучшее время", type: "negative" },
+  { text: "Остерегайся этого пути", type: "negative" },
+  // Пожелания / мудрости
+  { text: "Будь смелее — мир принадлежит храбрым", type: "wisdom" },
+  { text: "Не бойся перемен", type: "wisdom" },
+  { text: "Улыбнись — и мир улыбнётся тебе", type: "wisdom" },
+  { text: "Каждый день — это подарок", type: "wisdom" },
+  { text: "Ты сильнее, чем думаешь", type: "wisdom" },
+  { text: "Путь в тысячу миль начинается с одного шага", type: "wisdom" },
+  { text: "Сегодня отличный день начать что-то новое", type: "wisdom" },
+  { text: "Счастье ближе, чем кажется", type: "wisdom" },
+];
+
+const TYPE_COLORS = {
+  positive: "#00e676",
+  neutral: "#7c8aff",
+  negative: "#ff5252",
+  wisdom: "#ffd740",
 };
-let tab='home',adm=false,ef='all',_fc=null;
-// ═══ PERSIST ═══
-function sv(){try{localStorage.setItem('gg',JSON.stringify(D))}catch{}}
-function ld(){try{const d=localStorage.getItem('gg');if(d){const p=JSON.parse(d);for(let k in p)D[k]=p[k]}}catch{}}
-ld();
-// ═══ HELPERS ═══
-const $=id=>document.getElementById(id);
-function toast(m){const t=$('toast');t.textContent=m;t.classList.remove('hidden');setTimeout(()=>t.classList.add('hidden'),2500)}
-function cm(){$('mo').classList.add('hidden')}
-function om(h){$('mb').innerHTML=h;$('mo').classList.remove('hidden')}
-function pf(cb){_fc=cb;$('fi').value='';$('fi').click()}
-$('fi').onchange=function(e){const f=e.target.files[0];if(!f||!_fc)return;const r=new FileReader();r.onload=ev=>{_fc(ev.target.result);_fc=null};r.readAsDataURL(f)};
-const IX='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
-const IS='<svg viewBox="0 0 24 24" fill="#fbbf24" stroke="none" width="14" height="14"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01z"/></svg>';
-const IP='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
-const IE='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
-const IU='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/></svg>';
-const IC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>';
-function tav(t){return t.photo?'<img src="'+t.photo+'" style="width:100%;height:100%;object-fit:cover">':t.ava||'🏋️'}
-// ═══ NAV ═══
-function go(t){tab=t;document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));$('nav-'+t).classList.add('active');rr()}
-function tgAdmin(){adm=!adm;$('aBtn').classList.toggle('active',adm);$('aLbl').textContent=adm?'ADMIN':'DEV';rr()}
-function rr(){rlg();const c=$('ct');c.innerHTML=tab==='home'?rHome():tab==='trainers'?rTr():tab==='events'?rEv():rFd()}
-// ═══ LOGO ═══
-function rlg(){const e=$('hLogo');e.innerHTML=D.logo?'<img src="'+D.logo+'" class="logo-img">':'<svg viewBox="0 0 100 100" width="38" height="38"><polygon points="50,5 93,27.5 93,72.5 50,95 7,72.5 7,27.5" fill="#1a1a1a" stroke="#E63946" stroke-width="6"/><text x="50" y="62" text-anchor="middle" font-family="Oswald,sans-serif" font-weight="900" font-size="48" fill="white" letter-spacing="-2">G</text></svg>'}
 
-// ═══════════════ HOME ═══════════════
-function rHome(){
-  let h='<div class="section-header">🏠 Наш клуб</div>';
-  // Admin: logo card
-  if(adm) h+=`<div class="card"><div class="card-title">${IC} Логотип клуба</div><div style="display:flex;align-items:center;gap:16px"><div class="logo-zone" onclick="pf(d=>{D.logo=d;sv();rr()})">${D.logo?'<img src="'+D.logo+'">':IU}</div><div><div style="font-size:13px;color:var(--gray);margin-bottom:8px">Нажмите чтобы загрузить</div>${D.logo?'<button class="btn bd" style="padding:6px 14px;font-size:11px" onclick="D.logo=null;sv();rr()">Удалить</button>':''}</div></div></div>`;
-  // Schedule
-  h+='<div class="card"><div class="card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Время работы</div>';
-  if(adm){
-    D.schedule.forEach((s,i)=>{h+=`<div class="sched-edit-row"><input class="fi" style="max-width:100px" value="${s.day}" onchange="D.schedule[${i}].day=this.value;sv()"><input class="fi" value="${s.hours}" onchange="D.schedule[${i}].hours=this.value;sv()"><button class="sched-del" onclick="D.schedule.splice(${i},1);sv();rr()" title="Удалить">&times;</button></div>`});
-    h+=`<button class="add-btn" style="margin-top:8px;padding:8px;font-size:11px" onclick="D.schedule.push({day:'День',hours:'00:00 — 00:00'});sv();rr()">${IP} Добавить</button>`;
-  } else {
-    D.schedule.forEach(s=>{h+=`<div class="schedule-row"><span class="schedule-day">${s.day}</span><span class="schedule-hours">${s.hours}</span></div>`});
-  }
-  h+='</div>';
-  // Location
-  h+='<div class="card"><div class="card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Локация</div><div class="location-block"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg><span>г. Украинка, ул. Спортивная 15, ТЦ «Гантеля», 2 этаж</span></div></div>';
-  // Photos
-  h+='<div class="card"><div class="card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Фото зала и секций</div><div class="photo-grid">';
-  D.photos.forEach((p,i)=>{
-    const bg=p.img?`background-image:url('${p.img}');background-size:cover;background-position:center`:`background:${p.gr}`;
-    h+=`<div class="photo-card" style="${bg}" ${adm?`onclick="oPE(${i})"`:''}>`;
-    if(adm) h+=`<button class="photo-rm" onclick="event.stopPropagation();D.photos.splice(${i},1);sv();rr()">&times;</button>`;
-    h+=`<div class="photo-overlay"><div class="p-emoji">${p.emoji}</div><div class="p-label">${p.label}</div></div></div>`;
-  });
-  if(adm) h+=`<div class="photo-add" onclick="oPE(-1)">${IP}<span>Добавить</span></div>`;
-  h+='</div></div>';
-  return h;
-}
-// Photo edit
-function oPE(i){
-  const n=i===-1,p=n?{id:Date.now(),label:'',emoji:'🏋️',img:null,gr:'linear-gradient(135deg,#1a1a2e,#16213e)'}:D.photos[i];
-  const ems=['🏋️','🥊','🧘','💥','🏃','⚡','🎯','🏊','🚴','🤼'];
-  window._pe=p.emoji;window._pi=p.img;
-  let ep='';ems.forEach(e=>{ep+=`<button class="eo ${p.emoji===e?'sel':''}" onclick="document.querySelectorAll('#pep .eo').forEach(b=>b.classList.remove('sel'));this.classList.add('sel');window._pe='${e}'">${e}</button>`});
-  om(`<div class="modal-header"><div class="modal-name">${n?'Добавить секцию':'Редактировать'}</div><button class="modal-close" onclick="cm()">${IX}</button></div>
-  <div class="fg"><label class="fl">Фото секции</label><div class="upload-zone" onclick="pf(d=>{window._pi=d;document.getElementById('pp').src=d;document.getElementById('pp').classList.remove('hidden')})">${IU}<span>Загрузить фото</span></div><img id="pp" class="up-preview ${p.img?'':'hidden'}" src="${p.img||''}"></div>
-  <div class="fg"><label class="fl">Название</label><input class="fi" id="pL" value="${p.label}" placeholder="Напр: Тренажёрный зал"></div>
-  <div class="fg"><label class="fl">Иконка</label><div class="emoji-picker" id="pep">${ep}</div></div>
-  <div class="fa"><button class="btn bp" style="flex:1" onclick="svP(${i})">${n?'Добавить':'Сохранить'}</button>${!n?`<button class="btn bd" onclick="D.photos.splice(${i},1);sv();cm();rr()">Удалить</button>`:''}<button class="btn bs" onclick="cm()">Отмена</button></div>`);
-}
-function svP(i){
-  const o={id:i===-1?Date.now():(D.photos[i]?.id||Date.now()),label:$('pL').value||'Секция',emoji:window._pe||'🏋️',img:window._pi||null,gr:'linear-gradient(135deg,#1a1a2e,#16213e)'};
-  if(i===-1)D.photos.push(o);else D.photos[i]=o;
-  sv();cm();rr();toast(i===-1?'Секция добавлена':'Обновлено');
+const TYPE_GLOW = {
+  positive: "0 0 40px rgba(0,230,118,0.5)",
+  neutral: "0 0 40px rgba(124,138,255,0.5)",
+  negative: "0 0 40px rgba(255,82,82,0.4)",
+  wisdom: "0 0 40px rgba(255,215,64,0.5)",
+};
+
+export default function MagicBall() {
+  const [response, setResponse] = useState(null);
+  const [isShaking, setIsShaking] = useState(false);
+  const [showAnswer, setShowAnswer] = useState(false);
+  const [permissionGranted, setPermissionGranted] = useState(false);
+  const [tapHint, setTapHint] = useState(true);
+  const lastShake = useRef(0);
+  const prevIndex = useRef(-1);
+
+  const getRandomResponse = useCallback(() => {
+    let idx;
+    do {
+      idx = Math.floor(Math.random() * RESPONSES.length);
+    } while (idx === prevIndex.current && RESPONSES.length > 1);
+    prevIndex.current = idx;
+    return RESPONSES[idx];
+  }, []);
+
+  const triggerPrediction = useCallback(() => {
+    const now = Date.now();
+    if (now - lastShake.current < 2000) return;
+    lastShake.current = now;
+    setTapHint(false);
+    setShowAnswer(false);
+    setIsShaking(true);
+
+    setTimeout(() => {
+      setResponse(getRandomResponse());
+      setIsShaking(false);
+      setShowAnswer(true);
+    }, 1200);
+  }, [getRandomResponse]);
+
+  // Shake detection
+  useEffect(() => {
+    let lastX = 0, lastY = 0, lastZ = 0;
+    let lastUpdate = 0;
+    const SHAKE_THRESHOLD = 25;
+
+    const handleMotion = (e) => {
+      const acc = e.accelerationIncludingGravity;
+      if (!acc) return;
+      const now = Date.now();
+      if (now - lastUpdate < 100) return;
+      const dx = Math.abs(acc.x - lastX);
+      const dy = Math.abs(acc.y - lastY);
+      const dz = Math.abs(acc.z - lastZ);
+      if (dx + dy + dz > SHAKE_THRESHOLD) {
+        triggerPrediction();
+      }
+      lastX = acc.x; lastY = acc.y; lastZ = acc.z;
+      lastUpdate = now;
+    };
+
+    window.addEventListener("devicemotion", handleMotion);
+    return () => window.removeEventListener("devicemotion", handleMotion);
+  }, [triggerPrediction]);
+
+  // Request permission on iOS 13+
+  const requestPermission = async () => {
+    if (typeof DeviceMotionEvent?.requestPermission === "function") {
+      try {
+        const perm = await DeviceMotionEvent.requestPermission();
+        if (perm === "granted") setPermissionGranted(true);
+      } catch { /* fallback to tap */ }
+    } else {
+      setPermissionGranted(true);
+    }
+  };
+
+  useEffect(() => {
+    if (typeof DeviceMotionEvent?.requestPermission !== "function") {
+      setPermissionGranted(true);
+    }
+  }, []);
+
+  const typeColor = response ? TYPE_COLORS[response.type] : "#7c8aff";
+  const typeGlow = response ? TYPE_GLOW[response.type] : "none";
+
+  return (
+    <div style={styles.container} onClick={triggerPrediction}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cormorant+Garamond:ital,wght@0,400;1,500&display=swap');
+
+        @keyframes float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-12px); }
+        }
+        @keyframes shake {
+          0%, 100% { transform: rotate(0deg) scale(1); }
+          10% { transform: rotate(-12deg) scale(1.03); }
+          20% { transform: rotate(10deg) scale(0.97); }
+          30% { transform: rotate(-8deg) scale(1.02); }
+          40% { transform: rotate(6deg) scale(0.98); }
+          50% { transform: rotate(-4deg) scale(1.01); }
+          60% { transform: rotate(3deg) scale(1); }
+          70% { transform: rotate(-2deg) scale(1); }
+          80% { transform: rotate(1deg) scale(1); }
+          90% { transform: rotate(0deg) scale(1); }
+        }
+        @keyframes fadeInUp {
+          from { opacity: 0; transform: translateY(18px) scale(0.92); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes pulse {
+          0%, 100% { opacity: 0.5; }
+          50% { opacity: 1; }
+        }
+        @keyframes starTwinkle {
+          0%, 100% { opacity: 0.2; }
+          50% { opacity: 0.9; }
+        }
+        @keyframes orbiting {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
+
+      {/* Stars background */}
+      <div style={styles.stars}>
+        {Array.from({ length: 50 }).map((_, i) => (
+          <div
+            key={i}
+            style={{
+              position: "absolute",
+              width: Math.random() * 3 + 1,
+              height: Math.random() * 3 + 1,
+              borderRadius: "50%",
+              background: `rgba(${180 + Math.random()*75}, ${180 + Math.random()*75}, 255, ${0.3 + Math.random()*0.7})`,
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animation: `starTwinkle ${2 + Math.random() * 4}s ease-in-out ${Math.random() * 3}s infinite`,
+            }}
+          />
+        ))}
+      </div>
+
+      <h1 style={styles.title}>✦ Магический Шар ✦</h1>
+      <p style={styles.subtitle}>Задай вопрос и тряхни телефон</p>
+
+      {/* The Ball */}
+      <div
+        style={{
+          ...styles.ballOuter,
+          animation: isShaking ? "shake 0.8s ease-in-out" : "float 4s ease-in-out infinite",
+        }}
+      >
+        {/* Orbiting ring */}
+        <div style={styles.orbitRing}>
+          <div style={styles.orbitDot} />
+        </div>
+
+        {/* Ball body */}
+        <div style={styles.ball}>
+          {/* Glossy highlight */}
+          <div style={styles.gloss} />
+
+          {/* Inner window */}
+          <div style={{
+            ...styles.window,
+            boxShadow: showAnswer ? typeGlow : "inset 0 0 30px rgba(0,0,0,0.8)",
+          }}>
+            {showAnswer && response ? (
+              <div style={{
+                animation: "fadeInUp 0.6s ease-out",
+                textAlign: "center",
+                padding: "10px",
+              }}>
+                <div style={{
+                  ...styles.triangle,
+                  borderBottomColor: typeColor,
+                  filter: `drop-shadow(0 0 8px ${typeColor})`,
+                }} />
+                <p style={{
+                  ...styles.answerText,
+                  color: typeColor,
+                  textShadow: `0 0 20px ${typeColor}40`,
+                }}>
+                  {response.text}
+                </p>
+              </div>
+            ) : isShaking ? (
+              <div style={styles.loadingDots}>
+                {[0, 1, 2].map(i => (
+                  <div key={i} style={{
+                    ...styles.dot,
+                    animationDelay: `${i * 0.2}s`,
+                  }} />
+                ))}
+              </div>
+            ) : (
+              <span style={styles.number8}>8</span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Tap hint */}
+      {tapHint && (
+        <p style={styles.hint}>
+          {!permissionGranted ? (
+            <button onClick={(e) => { e.stopPropagation(); requestPermission(); }} style={styles.permBtn}>
+              Разрешить датчик движения
+            </button>
+          ) : (
+            "Тряхни телефон или нажми на шар ✨"
+          )}
+        </p>
+      )}
+
+      {/* Last answer type indicator */}
+      {showAnswer && response && (
+        <div style={{
+          ...styles.badge,
+          background: `${typeColor}20`,
+          borderColor: `${typeColor}40`,
+          color: typeColor,
+          animation: "fadeInUp 0.5s ease-out 0.3s both",
+        }}>
+          {response.type === "positive" ? "🌟 Позитивный ответ" :
+           response.type === "negative" ? "⚡ Предостережение" :
+           response.type === "neutral" ? "🔮 Загадочный ответ" :
+           "💫 Мудрость"}
+        </div>
+      )}
+    </div>
+  );
 }
 
-// ═══════════════ TRAINERS ═══════════════
-function rTr(){
-  let h='<div class="section-header">💪 Тренеры</div>';
-  D.trainers.forEach(t=>{
-    h+=`<div class="trainer-item" onclick="${adm?`oTE(${t.id})`:`oTV(${t.id})`}"><div class="trainer-avatar">${tav(t)}</div><div class="trainer-info"><div class="trainer-name">${t.name}</div><div class="trainer-spec">${t.spec} · ${t.exp}</div></div><div class="trainer-rating">${IS} ${t.rat}</div>${adm?'<span class="ie">'+IE+'</span>':''}</div>`;
-  });
-  if(adm) h+=`<button class="add-btn" onclick="oTE(null)">${IP} Добавить тренера</button>`;
-  return h;
-}
-function oTV(id){
-  const t=D.trainers.find(x=>x.id===id);if(!t)return;
-  om(`<div class="modal-header"><div><div class="modal-avatar">${tav(t)}</div><div class="modal-name">${t.name}</div><div style="display:flex;align-items:center;gap:6px">${IS}<span style="color:#fbbf24;font-weight:700;font-size:15px">${t.rat}</span><span style="color:var(--gray);font-size:13px;margin-left:8px">${t.spec}</span></div></div><button class="modal-close" onclick="cm()">${IX}</button></div>
-  <div class="modal-section"><div class="modal-label">Опыт</div><div class="modal-text">${t.exp}</div></div>
-  <div class="modal-section"><div class="modal-label">Программа тренировок</div><div class="modal-text">${t.prog}</div></div>
-  <div class="modal-section"><div class="modal-label">Стоимость</div><div class="modal-price">${t.price}</div></div>
-  <button class="book-btn" onclick="toast('Запись к ${t.name.replace(/'/g,"\\'")} отправлена!');cm()">📅 Записаться к тренеру</button>`);
-}
-function oTE(id){
-  const t=id?D.trainers.find(x=>x.id===id):null;
-  const d=t||{name:'',ava:'🏋️',photo:null,exp:'',spec:'',prog:'',price:'',rat:5};
-  window._tp=d.photo;window._ta=d.ava;
-  const avs=['🏋️','🤸','🥊','💪','🧘','🏃','⚡','🎯'];
-  let ep='';avs.forEach(e=>{ep+=`<button class="eo ${d.ava===e?'sel':''}" onclick="document.querySelectorAll('#tep .eo').forEach(b=>b.classList.remove('sel'));this.classList.add('sel');window._ta='${e}'">${e}</button>`});
-  om(`<div class="modal-header"><div class="modal-name">${t?'Редактировать':'Новый тренер'}</div><button class="modal-close" onclick="cm()">${IX}</button></div>
-  <div class="fg"><label class="fl">Фото тренера</label><div class="upload-zone" onclick="pf(d=>{window._tp=d;var el=document.getElementById('tpp');el.src=d;el.classList.remove('hidden')})">${IC}<span>Загрузить фото</span></div><img id="tpp" class="up-avatar ${d.photo?'':'hidden'}" src="${d.photo||''}"></div>
-  <div class="fg"><label class="fl">Или иконка</label><div class="emoji-picker" id="tep">${ep}</div></div>
-  <div class="fg"><label class="fl">Имя</label><input class="fi" id="tN" value="${d.name}" placeholder="Имя тренера"></div>
-  <div class="fg"><label class="fl">Опыт</label><input class="fi" id="tE" value="${d.exp}" placeholder="Напр: 5 лет"></div>
-  <div class="fg"><label class="fl">Специализация</label><input class="fi" id="tS" value="${d.spec}" placeholder="Напр: Бокс"></div>
-  <div class="fg"><label class="fl">Программа</label><textarea class="fta" id="tP" placeholder="Через запятую">${d.prog}</textarea></div>
-  <div class="fg"><label class="fl">Цена</label><input class="fi" id="tPr" value="${d.price}" placeholder="500 грн/час"></div>
-  <div class="fg"><label class="fl">Рейтинг (1–5)</label><input class="fi" id="tR" type="number" step="0.1" min="1" max="5" value="${d.rat}"></div>
-  <div class="fa"><button class="btn bp" style="flex:1" onclick="svT(${id||'null'})">${t?'Сохранить':'Добавить'}</button>${t?`<button class="btn bd" onclick="dlT(${id})">Удалить</button>`:''}<button class="btn bs" onclick="cm()">Отмена</button></div>`);
-}
-function svT(id){
-  const o={id:id||Date.now(),name:$('tN').value||'Без имени',ava:window._ta||'🏋️',photo:window._tp||null,exp:$('tE').value||'—',spec:$('tS').value||'—',prog:$('tP').value||'—',price:$('tPr').value||'—',rat:parseFloat($('tR').value)||5};
-  if(id){D.trainers=D.trainers.map(t=>t.id===id?o:t);toast('Обновлено')}else{D.trainers.push(o);toast('Тренер добавлен')}
-  sv();cm();rr();
-}
-function dlT(id){D.trainers=D.trainers.filter(t=>t.id!==id);sv();cm();rr();toast('Тренер удалён')}
-
-// ═══════════════ EVENTS ═══════════════
-function rEv(){
-  const fs=[{id:'all',l:'Все'},{id:'event',l:'Ивенты'},{id:'discount',l:'Скидки'},{id:'news',l:'Новости'},{id:'change',l:'Изменения'}];
-  const bc={event:'b-event',discount:'b-discount',news:'b-news',change:'b-change'};
-  const bl={event:'Ивент',discount:'Скидка',news:'Новость',change:'Изменение'};
-  const fl=ef==='all'?D.events:D.events.filter(e=>e.type===ef);
-  let h='<div class="section-header">📅 Ивенты и новости</div><div class="event-filter-bar">';
-  fs.forEach(f=>{h+=`<button class="ef ${ef===f.id?'active':''}" onclick="ef='${f.id}';rr()">${f.l}</button>`});
-  h+='</div>';
-  fl.forEach(e=>{
-    h+=`<div class="event-card ${adm?'adm':''}" ${adm?`onclick="oEE(${e.id})"`:''}>
-      <div class="event-emoji">${e.emoji}</div><div class="event-content">
-      <span class="badge ${bc[e.type]}">${bl[e.type]}</span>
-      <div class="event-title">${e.title}</div><div class="event-desc">${e.desc}</div><div class="event-date">${e.date}</div>
-      </div>${adm?'<span class="ie" style="align-self:flex-start">'+IE+'</span>':''}</div>`;
-  });
-  if(adm) h+=`<button class="add-btn" onclick="oEE(null)">${IP} Создать</button>`;
-  return h;
-}
-function oEE(id){
-  const t=id?D.events.find(x=>x.id===id):null;
-  const d=t||{title:'',desc:'',date:'',type:'event',emoji:'🎯'};
-  const ems=['🎯','🔥','🥊','📢','🏆','💰','📰','⚡','🎉','🎁'];
-  window._ee=d.emoji;
-  let ep='';ems.forEach(e=>{ep+=`<button class="eo ${d.emoji===e?'sel':''}" onclick="document.querySelectorAll('#eep .eo').forEach(b=>b.classList.remove('sel'));this.classList.add('sel');window._ee='${e}'">${e}</button>`});
-  om(`<div class="modal-header"><div class="modal-name">${t?'Редактировать':'Новый ивент'}</div><button class="modal-close" onclick="cm()">${IX}</button></div>
-  <div class="fg"><label class="fl">Заголовок</label><input class="fi" id="eT" value="${d.title}" placeholder="Название"></div>
-  <div class="fg"><label class="fl">Описание</label><textarea class="fta" id="eD" placeholder="Подробности">${d.desc}</textarea></div>
-  <div class="fg"><label class="fl">Дата</label><input class="fi" id="eDt" value="${d.date}" placeholder="15 мая 2026"></div>
-  <div class="fg"><label class="fl">Тип</label><select class="fsel" id="eTp"><option value="event" ${d.type==='event'?'selected':''}>Ивент</option><option value="discount" ${d.type==='discount'?'selected':''}>Скидка</option><option value="news" ${d.type==='news'?'selected':''}>Новость</option><option value="change" ${d.type==='change'?'selected':''}>Изменение</option></select></div>
-  <div class="fg"><label class="fl">Иконка</label><div class="emoji-picker" id="eep">${ep}</div></div>
-  <div class="fa"><button class="btn bp" style="flex:1" onclick="svE(${id||'null'})">${t?'Сохранить':'Создать'}</button>${t?`<button class="btn bd" onclick="dlE(${id})">Удалить</button>`:''}<button class="btn bs" onclick="cm()">Отмена</button></div>`);
-}
-function svE(id){
-  const o={id:id||Date.now(),title:$('eT').value||'Без названия',desc:$('eD').value||'',date:$('eDt').value||'—',type:$('eTp').value,emoji:window._ee||'🎯'};
-  if(id){D.events=D.events.map(e=>e.id===id?o:e);toast('Обновлено')}else{D.events.push(o);toast('Ивент создан')}
-  sv();cm();rr();
-}
-function dlE(id){D.events=D.events.filter(e=>e.id!==id);sv();cm();rr();toast('Удалено')}
-
-// ═══════════════ FEED ═══════════════
-function rFd(){
-  let h='<div class="section-header">🏆 Лента клуба</div>';
-  D.feed.forEach(f=>{
-    h+=`<div class="feed-card ${adm?'adm':''}" ${adm?`onclick="oFE(${f.id})"`:''}>
-      <div class="feed-header"><span class="feed-emoji">${f.emoji}</span><span class="feed-title">${f.title}</span>${adm?'<span class="ie" style="margin-left:auto">'+IE+'</span>':''}</div>
-      <div class="feed-text">${f.text}</div><div class="feed-date">${f.date}</div></div>`;
-  });
-  if(adm) h+=`<button class="add-btn" onclick="oFE(null)">${IP} Создать запись</button>`;
-  return h;
-}
-function oFE(id){
-  const t=id?D.feed.find(x=>x.id===id):null;
-  const d=t||{title:'',text:'',date:'',emoji:'🏆'};
-  const ems=['🏆','🥇','🏃','🎉','💪','⚡','🎯','🔥','🥊','📣'];
-  window._fe=d.emoji;
-  let ep='';ems.forEach(e=>{ep+=`<button class="eo ${d.emoji===e?'sel':''}" onclick="document.querySelectorAll('#fep .eo').forEach(b=>b.classList.remove('sel'));this.classList.add('sel');window._fe='${e}'">${e}</button>`});
-  om(`<div class="modal-header"><div class="modal-name">${t?'Редактировать':'Новая запись'}</div><button class="modal-close" onclick="cm()">${IX}</button></div>
-  <div class="fg"><label class="fl">Заголовок</label><input class="fi" id="fT" value="${d.title}" placeholder="Заголовок"></div>
-  <div class="fg"><label class="fl">Текст</label><textarea class="fta" id="fTx" placeholder="Текст записи">${d.text}</textarea></div>
-  <div class="fg"><label class="fl">Дата</label><input class="fi" id="fDt" value="${d.date}" placeholder="7 мая 2026"></div>
-  <div class="fg"><label class="fl">Иконка</label><div class="emoji-picker" id="fep">${ep}</div></div>
-  <div class="fa"><button class="btn bp" style="flex:1" onclick="svF(${id||'null'})">${t?'Сохранить':'Создать'}</button>${t?`<button class="btn bd" onclick="dlF(${id})">Удалить</button>`:''}<button class="btn bs" onclick="cm()">Отмена</button></div>`);
-}
-function svF(id){
-  const o={id:id||Date.now(),title:$('fT').value||'Без названия',text:$('fTx').value||'',date:$('fDt').value||'—',emoji:window._fe||'🏆'};
-  if(id){D.feed=D.feed.map(f=>f.id===id?o:f);toast('Обновлено')}else{D.feed.push(o);toast('Запись создана')}
-  sv();cm();rr();
-}
-function dlF(id){D.feed=D.feed.filter(f=>f.id!==id);sv();cm();rr();toast('Удалено')}
-
-// ═══ INIT ═══
-rr();
-</script>
-</body>
-</html>
+const styles = {
+  container: {
+    minHeight: "100vh",
+    background: "radial-gradient(ellipse at 50% 20%, #1a1040 0%, #0a0618 50%, #050310 100%)",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    fontFamily: "'Cormorant Garamond', serif",
+    position: "relative",
+    overflow: "hidden",
+    cursor: "pointer",
+    userSelect: "none",
+    padding: "20px",
+  },
+  stars: {
+    position: "absolute",
+    inset: 0,
+    pointerEvents: "none",
+  },
+  title: {
+    fontFamily: "'Cinzel Decorative', serif",
+    fontSize: "clamp(1.4rem, 5vw, 2.2rem)",
+    fontWeight: 900,
+    background: "linear-gradient(135deg, #c9b8ff 0%, #7c8aff 40%, #b39dff 70%, #e8d5ff 100%)",
+    WebkitBackgroundClip: "text",
+    WebkitTextFillColor: "transparent",
+    marginBottom: 4,
+    letterSpacing: "0.05em",
+    textAlign: "center",
+  },
+  subtitle: {
+    color: "#8a80b0",
+    fontSize: "clamp(0.85rem, 3vw, 1.05rem)",
+    fontStyle: "italic",
+    marginTop: 0,
+    marginBottom: 36,
+  },
+  ballOuter: {
+    position: "relative",
+    width: "clamp(240px, 65vw, 320px)",
+    height: "clamp(240px, 65vw, 320px)",
+  },
+  orbitRing: {
+    position: "absolute",
+    inset: "-18px",
+    borderRadius: "50%",
+    border: "1px solid rgba(124,138,255,0.15)",
+    animation: "orbiting 8s linear infinite",
+    pointerEvents: "none",
+  },
+  orbitDot: {
+    position: "absolute",
+    top: 0,
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 6,
+    height: 6,
+    borderRadius: "50%",
+    background: "#7c8aff",
+    boxShadow: "0 0 12px #7c8aff",
+  },
+  ball: {
+    width: "100%",
+    height: "100%",
+    borderRadius: "50%",
+    background: "radial-gradient(circle at 35% 30%, #2d2255 0%, #151030 45%, #0a0818 80%, #050510 100%)",
+    boxShadow: `
+      0 20px 60px rgba(0,0,0,0.7),
+      inset 0 -8px 30px rgba(0,0,0,0.5),
+      0 0 80px rgba(100,80,200,0.15),
+      0 0 120px rgba(60,40,150,0.1)
+    `,
+    position: "relative",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  gloss: {
+    position: "absolute",
+    top: "8%",
+    left: "18%",
+    width: "35%",
+    height: "25%",
+    borderRadius: "50%",
+    background: "radial-gradient(ellipse, rgba(255,255,255,0.15) 0%, transparent 70%)",
+    transform: "rotate(-20deg)",
+    pointerEvents: "none",
+  },
+  window: {
+    width: "45%",
+    height: "45%",
+    borderRadius: "50%",
+    background: "radial-gradient(circle, #0d0a20 0%, #06041a 100%)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    transition: "box-shadow 0.5s ease",
+    position: "relative",
+  },
+  triangle: {
+    width: 0,
+    height: 0,
+    borderLeft: "12px solid transparent",
+    borderRight: "12px solid transparent",
+    borderBottom: "20px solid #7c8aff",
+    margin: "0 auto 8px",
+  },
+  answerText: {
+    fontFamily: "'Cormorant Garamond', serif",
+    fontSize: "clamp(0.8rem, 2.5vw, 1rem)",
+    fontWeight: 500,
+    fontStyle: "italic",
+    lineHeight: 1.4,
+    margin: 0,
+  },
+  number8: {
+    fontFamily: "'Cinzel Decorative', serif",
+    fontSize: "3rem",
+    fontWeight: 900,
+    color: "#3a2d6e",
+    textShadow: "0 0 20px rgba(100,80,200,0.3)",
+  },
+  loadingDots: {
+    display: "flex",
+    gap: 8,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: "50%",
+    background: "#7c8aff",
+    animation: "pulse 0.6s ease-in-out infinite",
+  },
+  hint: {
+    color: "#6a60a0",
+    fontSize: "0.9rem",
+    marginTop: 40,
+    animation: "pulse 2s ease-in-out infinite",
+    textAlign: "center",
+  },
+  permBtn: {
+    background: "linear-gradient(135deg, #4a3d8f, #6a5acd)",
+    border: "none",
+    color: "#e0d8ff",
+    padding: "10px 24px",
+    borderRadius: 30,
+    fontSize: "0.9rem",
+    fontFamily: "'Cormorant Garamond', serif",
+    cursor: "pointer",
+    boxShadow: "0 4px 20px rgba(100,80,200,0.3)",
+  },
+  badge: {
+    marginTop: 28,
+    padding: "8px 20px",
+    borderRadius: 20,
+    border: "1px solid",
+    fontSize: "0.85rem",
+    fontStyle: "italic",
+  },
+};
